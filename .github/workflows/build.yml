@@ -15,9 +15,14 @@ jobs:
         with:
           gradle-version: 8.13
       - run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-      - run: unzip -q QwLauncher.zip
-      - run: cd QwLauncher && gradle assembleDebug --no-daemon
+      - name: Projeyi bul ve derle
+        run: |
+          ls -la
+          for z in *.zip; do [ -f "$z" ] && unzip -q -o "$z"; done
+          cd "$(dirname "$(find . -name gradlew -not -path './.git/*' | head -1)")"
+          pwd
+          gradle assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: QwLauncher-apk
-          path: QwLauncher/app/build/outputs/apk/debug/app-debug.apk
+          path: "**/app-debug.apk"
